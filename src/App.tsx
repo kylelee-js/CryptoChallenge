@@ -1,19 +1,14 @@
 import React from "react";
+import Router from "./Router";
 import styled from "styled-components";
-import "./App.css";
-
-const Circle = styled.div`
-  background-color: tomato;
-  height: 100px;
-  width: 100px;
-  border-radius: 15%;
-`;
+import GlobalStyle from "./GlobalStyle";
 
 function App() {
   return (
-    <div className="App">
-      <Circle>tomato</Circle>
-    </div>
+    <>
+      <GlobalStyle />
+      <Router />
+    </>
   );
 }
 
