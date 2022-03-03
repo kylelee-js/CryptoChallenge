@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { fetchCoins } from "./api";
 
 const Title = styled.h1`
   font-family: "Roboto";
@@ -20,7 +23,7 @@ const Header = styled.header`
 `;
 const CoinsList = styled.ul``;
 const Coin = styled.li`
-  background-color: ${(props) => props.theme.bgColor};
+  background-color: ${(props) => props.theme.tabColor};
   border-radius: 15px;
   color: ${(props) => props.theme.textColor};
   margin-bottom: 10px;
@@ -34,7 +37,7 @@ const Coin = styled.li`
   }
 
   &:hover {
-    // Link를 사용해도 결국 브라우져에서는 anchor tag로 변환된다...
+    // Link를 사용해도 결국 브라우져에서는 anchor tag로 변환된다.
     a {
       color: ${(props) => props.theme.accentColor};
     }
@@ -47,7 +50,7 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
-interface CoinInterface {
+interface ICoins {
   id: string;
   name: string;
   symbol: string;
@@ -58,31 +61,22 @@ interface CoinInterface {
 }
 
 function Coins() {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [loading, setLoading] = useState(true);
+  // React-Query로 쉽게 구현
+  const { isLoading, data } = useQuery<ICoins[]>("allCoins", fetchCoins);
 
-  // 로딩 즉시 한번만 실행할 즉시실행함수
-  useEffect(() => {
-    (async () => {
-      const res = await (
-        await fetch("https://api.coinpaprika.com/v1/coins")
-      ).json();
-
-      setCoins(res.slice(0, 100));
-
-      setLoading(false);
-    })();
-  }, []);
   return (
     <Container>
+      <Helmet>
+        <title>Coins</title>
+      </Helmet>
       <Header>
         <Title>Coins</Title>
       </Header>
-      {loading ? (
+      {isLoading ? (
         "Now Loading Coin List..."
       ) : (
         <CoinsList>
-          {coins.map((coin) => (
+          {data?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
               <Link
                 to={{

@@ -10,6 +10,9 @@ import {
 import { useEffect, useState } from "react";
 import Price from "./Price";
 import Chart from "./Chart";
+import { useQuery } from "react-query";
+import { fetchCoinInfo, fetchPriceInfo } from "./api";
+import { Helmet } from "react-helmet";
 
 // Styled-Components ######################################################################################################
 const Title = styled.h1`
@@ -33,8 +36,8 @@ const Overview = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px 20px;
-  background-color: #303030;
-  color: white;
+  background-color: ${(props) => props.theme.tabColor};
+  color: ${(props) => props.theme.textColor};
   border-radius: 10px;
 `;
 
@@ -65,7 +68,7 @@ const Tab = styled.span<{ isActive: boolean }>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
-  background-color: #333;
+  background-color: ${(props) => props.theme.tabColor};
 
   border-radius: 10px;
   padding: 10px 20px;
@@ -75,6 +78,20 @@ const Tab = styled.span<{ isActive: boolean }>`
   a {
     display: block;
   }
+`;
+
+const PrevButton = styled.div`
+  border-radius: 8px;
+  background-color: ${(props) => props.theme.tabColor};
+  width: 40px;
+  height: 20px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  left: 10px;
+  top: 40px;
 `;
 
 // Interfaces #############################################################################################################
@@ -143,37 +160,45 @@ interface IPriceData {
   quotes: Quotes;
 }
 
-function Coin() {
+interface ICoinProps {
+  theme: boolean;
+}
+function Coin({ theme }: ICoinProps) {
   // const { coinId } = useParams<{ coinId: string }>();
   const { coinId } = useParams<Params>();
   const { state } = useLocation<LocationInterface>();
-  const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<IInfoData>();
-  const [priceInfo, setPriceInfo] = useState<IPriceData>();
+
+  const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
+    ["info", coinId],
+    () => fetchCoinInfo(coinId)
+  );
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(
+    ["tickers", coinId],
+    () => fetchPriceInfo(coinId),
+    {
+      refetchInterval: 10000,
+    }
+  );
+
+  const loading = infoLoading || tickersLoading;
+
   const chartMatch = useRouteMatch("/:coinId/chart");
   const priceMatch = useRouteMatch("/:coinId/price");
-
-  console.log(chartMatch);
-  console.log(priceMatch);
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      setPriceInfo(priceData);
-      setLoading(false);
-    })();
-    // for the best practice
-  }, [coinId]);
-
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading" : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
-        <Title>{state?.name || "Loading"}</Title>
+        <Link to="/">
+          <PrevButton>&larr;</PrevButton>
+        </Link>
+
+        <Title>
+          {state?.name ? state.name : loading ? "Loading" : infoData?.name}
+        </Title>
       </Header>
       {loading ? (
         "Now Loading a Coin Information..."
@@ -182,28 +207,28 @@ function Coin() {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>{info?.symbol}</span>
+              <span>{infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>open source:</span>
-              <span>{info?.open_source ? "YES" : "NO"}</span>
+              <span>price:</span>
+              <span>{tickersData?.quotes.USD.price.toFixed(2)}</span>
             </OverviewItem>
           </Overview>
 
-          <Description>{info?.description}</Description>
+          <Description>{infoData?.description}</Description>
 
           <Overview>
             <OverviewItem>
               <span>total supply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{tickersData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>max supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
 
@@ -212,16 +237,16 @@ function Coin() {
               <Link to={`/${coinId}/chart`}>Chart</Link>
             </Tab>
             <Tab isActive={priceMatch !== null}>
-              <Link to={`/${coinId}/price`}>Price</Link>
+              <Link to={`/${coinId}/price`}>Price $</Link>
             </Tab>
           </Tabs>
 
           <Switch>
             <Route path={`/${coinId}/price`}>
-              <Price />
+              <Price coinId={coinId} />
             </Route>
             <Route path={`/${coinId}/chart`}>
-              <Chart />
+              <Chart coinId={coinId} theme={theme} />
             </Route>
           </Switch>
         </>
