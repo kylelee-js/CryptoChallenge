@@ -10,7 +10,7 @@ interface IRouterProps {
 
 function Router({ theme }: IRouterProps) {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Switch>
         <Route path="/:coinId">
           <Coin theme={theme} />
