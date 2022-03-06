@@ -4,6 +4,8 @@ import styled from "styled-components";
 import GlobalStyle from "./GlobalStyle";
 import { lightTheme, darkTheme } from "./theme";
 import { ThemeProvider } from "styled-components";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isDarkAtom } from "./atoms";
 
 const ToggleButton = styled.div`
   border-radius: 8px;
@@ -20,18 +22,16 @@ const ToggleButton = styled.div`
 `;
 
 function App() {
-  const [theme, setTheme] = useState(true);
-  const toggleTheme = () => {
-    setTheme((p) => !p);
-  };
+  const isDark = useRecoilValue(isDarkAtom);
+  const toggleDarkAtom = useSetRecoilState(isDarkAtom);
   return (
     <>
-      <ThemeProvider theme={theme ? lightTheme : darkTheme}>
+      <ThemeProvider theme={isDark ? lightTheme : darkTheme}>
         <GlobalStyle />
-        <ToggleButton onClick={toggleTheme}>
-          {theme ? "Light" : "Dark"}
+        <ToggleButton onClick={() => toggleDarkAtom((prev) => !prev)}>
+          {isDark ? "Light" : "Dark"}
         </ToggleButton>
-        <Router theme={theme} />
+        <Router />
       </ThemeProvider>
     </>
   );

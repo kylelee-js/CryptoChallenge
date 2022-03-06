@@ -4,16 +4,12 @@ import Coin from "./routes/Coin";
 
 // URI에 아이디를 주려면 /:param <= 이런 방식으로 입력해야한다.
 
-interface IRouterProps {
-  theme: boolean;
-}
-
-function Router({ theme }: IRouterProps) {
+function Router() {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Switch>
         <Route path="/:coinId">
-          <Coin theme={theme} />
+          <Coin />
         </Route>
         <Route path="/">
           <Coins />

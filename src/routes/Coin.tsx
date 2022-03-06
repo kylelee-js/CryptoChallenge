@@ -160,11 +160,7 @@ interface IPriceData {
   quotes: Quotes;
 }
 
-interface ICoinProps {
-  theme: boolean;
-}
-function Coin({ theme }: ICoinProps) {
-  // const { coinId } = useParams<{ coinId: string }>();
+function Coin() {
   const { coinId } = useParams<Params>();
   const { state } = useLocation<LocationInterface>();
 
@@ -246,7 +242,7 @@ function Coin({ theme }: ICoinProps) {
               <Price coinId={coinId} />
             </Route>
             <Route path={`/${coinId}/chart`}>
-              <Chart coinId={coinId} theme={theme} />
+              <Chart coinId={coinId} />
             </Route>
           </Switch>
         </>
