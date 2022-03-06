@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/CryptoChallenge/static/js/main.15d2327d.js",
+    "main.js": "/CryptoChallenge/static/js/main.6caa710a.js",
     "index.html": "/CryptoChallenge/index.html",
-    "main.15d2327d.js.map": "/CryptoChallenge/static/js/main.15d2327d.js.map"
+    "main.6caa710a.js.map": "/CryptoChallenge/static/js/main.6caa710a.js.map"
   },
   "entrypoints": [
-    "static/js/main.15d2327d.js"
+    "static/js/main.6caa710a.js"
   ]
 }
