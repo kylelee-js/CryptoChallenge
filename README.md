@@ -1,4 +1,4 @@
-### Nomad Coder - Challenge Assignment
+### Nomad Coder - CryptoCoin Challenge Assignment
 
 - From 3/2 to 3/5
 
@@ -6,5 +6,7 @@
 * Styled-Component
 * React-Router
 * React-Query
+* REcoil
 
-git pull origin main
+
+CryptoCoin API from '(Coinpaprika)[https://api.coinpaprika.com/]'
