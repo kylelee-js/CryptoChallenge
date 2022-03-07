@@ -2,6 +2,7 @@
 
 - From 3/2 to 3/5
 
+#### Using
 * Typescript
 * Styled-Component
 * React-Router
@@ -9,4 +10,4 @@
 * REcoil
 
 
-CryptoCoin API from '(Coinpaprika)[https://api.coinpaprika.com/]'
+CryptoCoin API from '[Coinpaprika](https://api.coinpaprika.com/)'
