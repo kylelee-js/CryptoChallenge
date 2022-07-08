@@ -1,4 +1,4 @@
-### Nomad Coder - CryptoCoin Challenge Assignment
+
 
 https://kylelee-js.github.io/CryptoChallenge/
 
